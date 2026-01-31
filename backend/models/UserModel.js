@@ -6,13 +6,13 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true},
 
     isOnboarded: {type: Boolean, default: false},
-    targetRoless: {type: [String]},
+    targetRoles: {type: [String]},
     technicalSkills: {type: [String]},
     
     createdInterviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Interview'}],
 
-    createdAt: {type: Date, default: Date.now}
-});
+    // createdAt: {type: Date, default: Date.now}
+}, {timestamps: true});
 
 const User = mongoose.model('User', userSchema);
 

@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 export async function login(req, res) {
     const {email, password} = req.body;
-
+    // console.log(req.body)
     try {
         if(!email || !password) {
             return res.json({
@@ -35,7 +35,8 @@ export async function login(req, res) {
 
         return res.json({
             success: true,
-            token: token
+            token: token,
+            user,
         })
 
 
@@ -49,7 +50,7 @@ export async function login(req, res) {
 
 export async function myInfo(req, res) {
     const token = req.headers["authorization"];
-
+    // console.log("hit")
     try {
         if(!token) {
             return res.json({
@@ -118,12 +119,20 @@ export async function signup (req, res) {
                 message: "failed to hash"
             })
         }
-        const user = new User({name, email, password: encryptPass});
-        await user.save();
+        const otp = String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
+
+        const user = {
+            name, 
+            email, 
+            password: encryptPass,
+            otp: Number(otp)
+        }
         
+        const token = jwt.sign(user, process.env.JWT_SECRET, {expiresIn: "10m"});
+        console.log(user);
         return res.json({
             success: true,
-            message: "Account created successfully! Please Login"
+            token: token
         })
 
     }catch(e) {
@@ -131,6 +140,108 @@ export async function signup (req, res) {
             success: false,
             // error: "failed",
             message: e.message
+        })
+    }
+}
+
+export async function checkOtp(req, res) {
+    const {otp, token} = req.body;
+
+    if(!otp || !token) {
+        return res.json({
+            success: false, 
+            message: "All fields Required"
+        })
+    }
+
+    try {
+        const decode = jwt.verify(token, process.env.JWT_SECRET);
+
+        if(!decode) {
+            return res.json({
+                success: false, 
+                message: "Invalid Token"
+            }) 
+        }
+
+        if(Number(otp) != decode.otp) {
+            return res.json({
+                success: false, 
+                message: "Invalid Otp"
+            })
+        }
+
+        const user = new User({
+            name: decode.name, 
+            email: decode.email, 
+            password: decode.password
+        });
+
+        await user.save();
+
+        return res.json({
+            success: true, 
+            user
+        })
+    }
+    catch(e) {
+        return res.json({
+            success: false,
+            message: e.message
+        })
+    }
+}
+
+export async function onBoarding(req, res) {
+    const {targetRoles, technicalSkills} = req.body;
+    // console.log(targetRoles, technicalSkills)
+    const token = req.headers['authorization'];
+    try {
+        if(!token) {
+            return res.json({
+                success: false,
+                message: "Token not found"
+            })
+        }
+        if(!targetRoles || !technicalSkills) {
+            return res.json({
+                success: false,
+                message: "All fields required"
+            })
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        if(!decoded) {
+            return res.json({
+                success: false,
+                message: "Invalid token"
+            })
+        }
+        // console.log(decoded);
+        const user = await User.findById(decoded.id);
+        
+        if(!user) {
+            return res.json({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+        user.targetRoles = targetRoles;
+        user.technicalSkills = technicalSkills; 
+        user.isOnboarded = true;
+
+        await user.save();
+
+        return res.json({
+            success: true,
+            user,
+        })
+    } catch (error) {
+        return res.json({
+            success: false,
+            message: error.message
         })
     }
 }
