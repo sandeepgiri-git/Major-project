@@ -119,6 +119,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
+  const forgetPassword = async (email: string) => {
+    try {
+      if(!email) {
+        toast.error("Please enter the email");
+        return false;
+      }
+
+      const res = await axios.post(`${backendURL}/auth/forget-password`, {email: email})
+
+      if(!res.data.success) {
+        toast.error(res.data.message);
+        return false;
+      }
+
+      toast.success(res.data.message);
+      return true;
+    }
+    catch(error: any) {
+      toast.error(error.message);
+      return false;
+    }
+  }
+
+  const resetPassword = async (token : string, password : string) => {
+    try {
+      if(!password){
+        toast.error("Please enter the password");
+        return false;
+      }
+
+      const res = await axios.post(`${backendURL}/auth/reset-password`, {token: token, password : password}, {headers: {"authorization": token}});
+
+      if(!res.data.success) {
+        toast.error(res.data.message);
+        return false;
+      }
+
+      toast.success(res.data.message);
+      return true;
+    
+    } catch (error:any) {
+      toast.error(error.message);
+      return false;
+    }
+  }
+
   const login = async (email: string, password: string) => {
     try{
       const res = await axios.post(`${backendURL}/auth/login`, 
@@ -297,7 +343,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       );
 
       if(!res.data.success) {
-        console.log(res.data.message);9
+        console.log(res.data.message);
         return;
       }
 
@@ -368,9 +414,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ 
-        summary, user,fetchDone, interviews,loading, onboarding,
+        summary, user,fetchDone, interviews,loading, onboarding, getUser,forgetPassword,
         checkAnswer, generateSummary, startInterview, submitInterview, deleteInterview,
-        login, logout, isAuth, getSummary, interview ,createInterview, signup, checkOtp
+        login, logout, isAuth, getSummary, interview ,createInterview, signup, checkOtp,
+        resetPassword
       }}>
       {children}
     </AuthContext.Provider>

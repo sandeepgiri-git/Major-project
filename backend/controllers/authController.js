@@ -1,6 +1,104 @@
 import User from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { sendForgetPasswordMail, sendMail } from "../middleware/sendMail.js";
+
+export const forgetPassword = async (req, res) => {
+    const {email} = req.body;
+    try {
+        const user = await User.findOne({email}).select('-password');
+        if(!user) {
+            return res.json({
+                success: false,
+                message: "No user found with this email"
+            })
+        }
+
+        const token = jwt.sign(
+            {id: user._id},
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "10m" 
+            }
+        )
+        
+        const isSent = sendForgetPasswordMail(email, "Password Reset Link", token, "http://localhost:3000/reset-password");
+
+        if(isSent) {
+            return res.json({
+                success: true,
+                message: "Password reset link sent to your email"
+            })
+        }
+
+        return res.json({
+            success: false,
+            message: "Failed to send email"
+        })        
+
+    }
+    catch(error) {
+        return res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+export async function resetPassword(req,res) {
+    const {password} = req.body;
+    const token = req.headers['authorization'];
+
+    try {
+        if(!token){
+            return res.json({
+                success : false,
+                message : "token not found"
+            })
+        }
+        if(!password){
+            return res.json({
+                success : false,
+                message : "please enter the password"
+            })
+        }
+
+        const decode = jwt.verify(token, process.env.JWT_SECRET);
+        if(!decode) {
+            return res.json({
+                success: false,
+                message: "Invalid token"
+            })
+        }
+
+        const hashed = bcrypt.hashSync(password, 10);
+
+        // save to user
+        User.findByIdAndUpdate(decode.id, {password: hashed}, {new: true}).then((user) => {
+            if(!user) {
+                return res.json({
+                    success: false,
+                    message: "User not found"
+                })
+            }
+            return res.json({
+                success: true,
+                message: "Password reset successful"
+            })
+        }
+        ).catch((error) => {            
+            return res.json({
+                success: false,
+                message: error.message
+            })
+        })
+    } catch (error) {
+        return res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
 
 export async function login(req, res) {
     const {email, password} = req.body;
@@ -130,6 +228,7 @@ export async function signup (req, res) {
         
         const token = jwt.sign(user, process.env.JWT_SECRET, {expiresIn: "10m"});
         console.log(user);
+        sendMail(email, "Your Verification Code for AI Interview", otp);
         return res.json({
             success: true,
             token: token

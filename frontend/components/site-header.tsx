@@ -49,7 +49,7 @@ export function SiteHeader() {
 
           {(isAuth && <Button onClick={() => logout()} variant="ghost" size="icon" asChild>
             {/* want to style logout icon same as link */}
-            <Link href="/login" title="logout">
+            <Link href="/logout" title="logout">
               <LogOut className="h-5 w-5"/>
             </Link>
           </Button>)}

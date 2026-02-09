@@ -43,7 +43,7 @@ export function LoginForm() {
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link href="#" className="text-xs text-muted-foreground hover:text-foreground">
+              <Link href="/forget-password" className="text-xs text-muted-foreground hover:text-foreground">
                 Forgot password?
               </Link>
             </div>

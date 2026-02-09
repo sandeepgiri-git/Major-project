@@ -9,7 +9,7 @@ import { redirect, useRouter } from "next/navigation"
 export default function OnboardingSetupPage() {
   const router = useRouter();
   const [isComplete, setIsComplete] = useState(false)
-  const {onboarding, fetchDone, user} = useAuth();
+  const {onboarding, fetchDone, user, getUser} = useAuth();
   const [loading, setLoading] = useState(false);
 
   if(fetchDone && !user) {
@@ -23,6 +23,7 @@ export default function OnboardingSetupPage() {
     const res = await onboarding(formData);
 
     if(res) {
+      await getUser();
       setLoading(false);
       setIsComplete(true)
       redirect('/onboarding');
