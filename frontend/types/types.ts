@@ -1,4 +1,5 @@
-export const backendURL = "http://localhost:1010/api"
+export const backendURL = "https://ai-based-interview.onrender.com/api"
+// export const backendURL = "http://localhost:1010/api"
 
 export interface User {
     name: string;
