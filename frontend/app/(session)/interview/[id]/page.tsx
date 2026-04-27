@@ -404,53 +404,79 @@ export default function InterviewSessionPage({ params }: { params: { id: string 
         {/* Left: Video Area - 50% */}
         <div className="flex-1 min-w-0 flex flex-col">
           <Card className="overflow-hidden border-2 border-border flex flex-col">
-            <div className="h-115 bg-linear-to-br from-slate-900 to-slate-800 flex items-center justify-center relative shrink-0">
-              {isVideoOn ? (
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  muted
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center text-muted-foreground">
-                  <VideoOff className="h-10 w-10 mb-2" />
-                  <p className="text-xs font-medium">Camera Off</p>
+            <div className="h-115 grid grid-cols-2 gap-2 bg-slate-950 p-2 relative shrink-0">
+              {/* Bot Area */}
+              <div className="bg-slate-900 rounded-lg overflow-hidden flex flex-col items-center justify-center relative shadow-inner border border-slate-800">
+                <div className="relative">
+                  <img src="/chat-bot.png" alt="AI Bot" className="w-24 h-24 rounded-full bg-slate-800/50 p-3 mb-4 z-10 relative" />
+                  {/* Ripple effect */}
+                  <div className="absolute inset-0 bg-blue-500/20 rounded-full animate-ping z-0 scale-150"></div>
                 </div>
-              )}
-
-              {isRecording && (
-                <div className="absolute top-2 right-2 flex items-center gap-1 bg-red-600 px-2 py-1 rounded">
-                  <span className="h-2 w-2 bg-white rounded-full animate-pulse" />
-                  <span className="text-xs font-semibold text-white">Recording</span>
+                <p className="text-white text-sm font-medium z-10">Interview AI</p>
+                <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-md">
+                   <div className="flex gap-1 items-end h-3">
+                      <span className="w-1 bg-blue-400 rounded-full animate-[bounce_1s_infinite] h-2"></span>
+                      <span className="w-1 bg-blue-400 rounded-full animate-[bounce_1s_infinite_0.2s] h-3"></span>
+                      <span className="w-1 bg-blue-400 rounded-full animate-[bounce_1s_infinite_0.4s] h-1.5"></span>
+                   </div>
+                   <span className="text-xs text-blue-300 font-medium tracking-wide">Listening</span>
                 </div>
-              )}
+              </div>
 
-              {/* Compact Media Controls */}
-              <div className="absolute bottom-2 left-2 right-2 flex gap-1 justify-center">
+              {/* User Area */}
+              <div className="bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center relative shadow-inner border border-slate-800">
+                {isVideoOn ? (
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    muted
+                    className="w-full h-full object-cover transform scale-x-[-1]"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-muted-foreground">
+                    <VideoOff className="h-10 w-10 mb-2" />
+                    <p className="text-xs font-medium">Camera Off</p>
+                  </div>
+                )}
+                
+                {isRecording && (
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-red-500/90 backdrop-blur-sm px-2.5 py-1 rounded-md">
+                    <span className="h-2 w-2 bg-white rounded-full animate-pulse" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-white">Recording</span>
+                  </div>
+                )}
+                
+                <div className="absolute bottom-3 left-3 bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-md text-xs font-medium text-white tracking-wide">
+                  You
+                </div>
+              </div>
+              
+              {/* Central Compact Media Controls */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 justify-center bg-background/80 border border-border p-1.5 rounded-full backdrop-blur-xl shadow-lg z-20">
                 <Button
-                  size="sm"
-                  variant={isVideoOn ? "default" : "outline"}
+                  size="icon"
+                  variant={isVideoOn ? "ghost" : "destructive"}
                   onClick={handleToggleVideo}
-                  className="h-7 px-2 text-xs gap-1"
+                  className={`h-8 w-8 rounded-full ${isVideoOn ? 'hover:bg-muted' : ''}`}
                 >
-                  {isVideoOn ? <Video className="h-3 w-3" /> : <VideoOff className="h-3 w-3" />}
+                  {isVideoOn ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
                 </Button>
                 <Button
-                  size="sm"
-                  variant={isMicOn ? "default" : "outline"}
+                  size="icon"
+                  variant={isMicOn ? "ghost" : "destructive"}
                   onClick={handleToggleMic}
-                  className="h-7 px-2 text-xs gap-1"
+                  className={`h-8 w-8 rounded-full ${isMicOn ? 'hover:bg-muted' : ''}`}
                 >
-                  {isMicOn ? <Mic className="h-3 w-3" /> : <MicOff className="h-3 w-3" />}
+                  {isMicOn ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
                 </Button>
+                <div className="w-[1px] h-4 bg-border self-center mx-1"></div>
                 <Button
-                  size="sm"
-                  variant={isPaused ? "outline" : "default"}
+                  size="icon"
+                  variant={isPaused ? "destructive" : "ghost"}
                   onClick={() => setIsPaused(!isPaused)}
-                  className="h-7 px-2 text-xs gap-1"
+                  className={`h-8 w-8 rounded-full ${!isPaused ? 'hover:bg-muted' : ''}`}
                 >
-                  {isPaused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
+                  {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
                 </Button>
               </div>
             </div>
