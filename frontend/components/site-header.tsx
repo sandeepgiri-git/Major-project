@@ -1,18 +1,25 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ThemeSelector } from "@/components/theme-selector"
-import { User } from "lucide-react"
+import { User, LogOut } from "lucide-react"
 import { useAuth } from "@/app/contexts/AuthContext"
 import { PageLoader } from "./page-loader"
-import { LogOut } from "lucide-react"
 
 export function SiteHeader() {
   const {isAuth, fetchDone, logout} = useAuth();
+  const pathname = usePathname();
+
+  const navItems = [
+    { href: "/interviews", label: "Interviews" },
+    { href: "/about", label: "About" },
+    { href: "/help", label: "Help" },
+  ];
   
   return (
-    <header className="border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
         <Link href="/" className="flex items-center gap-2">
           {/* <span className="inline-block h-8 w-8 rounded-md bg-primary" aria-hidden="true" /> */}
@@ -24,19 +31,23 @@ export function SiteHeader() {
           <span className="font-medium text-2xl">Interview AI</span>
         </Link>
 
-        <nav className="hidden items-center gap-10 md:flex">
-          <Link href="/interviews" className="text-2sm text-muted-foreground hover:text-foreground transition-colors">
-            Interviews
-          </Link>
-          <Link href="/pricing" className="text-2sm text-muted-foreground hover:text-foreground transition-colors">
-            Pricing
-          </Link>
-          <Link href="/about" className="text-2sm text-muted-foreground hover:text-foreground transition-colors">
-            About
-          </Link>
-          <Link href="/help" className="text-2sm text-muted-foreground hover:text-foreground transition-colors">
-            Help
-          </Link>
+        <nav className="hidden items-center gap-1 rounded-full border border-border/40 bg-muted/40 p-1 md:flex "> 
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(`${item.href}/`));
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`text-md font-medium transition-all px-10 py-1 rounded-full ${
+                  isActive 
+                    ? "bg-background text-foreground shadow-sm" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">

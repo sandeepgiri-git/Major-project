@@ -83,7 +83,6 @@ export default function InterviewsPage() {
 
   return (
     <>
-      <SiteHeader />
       <main className="min-h-screen bg-background">
         <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
           <div className="mb-6 md:mb-8">

@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-export function PageLoader() {
-  const [isVisible, setIsVisible] = useState(false);
+export function PageLoader({ force = false }: { force?: boolean } = {}) {
+  const [isVisible, setIsVisible] = useState(force);
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
+    if (force) return;
     // Show loader when route changes
     setIsVisible(true);
 
@@ -18,9 +18,9 @@ export function PageLoader() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [pathname]); // 👈 Reacts to route changes automatically
+  }, [pathname, force]); // 👈 Reacts to route changes automatically
 
-  if (!isVisible) return null;
+  if (!isVisible && !force) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">

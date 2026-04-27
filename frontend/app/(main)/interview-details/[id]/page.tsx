@@ -179,7 +179,7 @@ export default function InterviewDetailsPage({ params }: { params: { id: string 
 
   if (loading && !fetchDone) {
     return (
-      <PageLoader/>
+      <PageLoader force />
     )
   }
 
@@ -197,7 +197,6 @@ export default function InterviewDetailsPage({ params }: { params: { id: string 
 
   return (
     <>
-      <SiteHeader />
       <main className="min-h-screen bg-background">
         <div className="mx-auto max-w-4xl px-4 py-8">
           {/* Back Button */}

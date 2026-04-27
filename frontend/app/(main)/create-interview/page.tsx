@@ -15,7 +15,6 @@ export default function CreateInterviewPage() {
 
   return (
     <>
-      <SiteHeader />
       <main className="min-h-screen bg-background">
         <div className="mx-auto max-w-4xl px-4 py-6 md:py-8">
           <div className="mb-8 flex items-center gap-4">

@@ -18,7 +18,7 @@ const Layout = ({children}: {children: ReactNode}) => {
 
     // Show loader while checking auth
     if (!fetchDone || isChecking) {
-        return <PageLoader />;
+        return <PageLoader force />;
     }
 
     // If user exists and fetch is done, don't render children

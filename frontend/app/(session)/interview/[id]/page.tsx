@@ -262,7 +262,7 @@ export default function InterviewSessionPage({ params }: { params: { id: string 
   }, [interviewData]);
 
   if (loading) {
-    return <PageLoader />
+    return <PageLoader force />
   }
 
   if (error || !interviewData) {
@@ -274,7 +274,7 @@ export default function InterviewSessionPage({ params }: { params: { id: string 
   }
 
   if(isStarting) {
-    return <PageLoader/>
+    return <PageLoader force />
   }
   
 

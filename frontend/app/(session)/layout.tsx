@@ -2,7 +2,6 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext';
 import { redirect } from 'next/navigation';
-import { SiteHeader } from '@/components/site-header';
 
 const layout = ({children} : {children: ReactNode}) => {
     const {user, fetchDone} = useAuth();
@@ -26,7 +25,6 @@ const layout = ({children} : {children: ReactNode}) => {
     
   return (
     <>
-      <SiteHeader/>
       {children}
     </>
   )

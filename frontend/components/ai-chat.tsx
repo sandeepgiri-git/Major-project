@@ -96,7 +96,7 @@ export function AIChat({ showOnPage }: { showOnPage: boolean }) {
         <Card className="fixed bottom-24 right-6 z-40 w-96 max-h-96 flex flex-col shadow-2xl">
           {/* Header */}
           <div className="bg-primary text-primary-foreground p-4 rounded-t-lg">
-            <h3 className="font-semibold">AI Assistant</h3>
+            <h3 className="font-semibold">AI Assistant - This feature is not available right now</h3>
             <p className="text-xs opacity-90">Ask me anything!</p>
           </div>
 

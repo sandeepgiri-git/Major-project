@@ -187,7 +187,7 @@ export default function InterviewResultsPage({ params }: { params: { id: string 
 
   if(loading || !isFetch || !data) {
     return (
-      <PageLoader/>
+      <PageLoader force />
     )
   }
   const formatDate = (dateString: string) => {
@@ -216,7 +216,6 @@ export default function InterviewResultsPage({ params }: { params: { id: string 
 
   return (
     <>
-      <SiteHeader />
       <main className="min-h-screen bg-background">
         <div className="mx-auto max-w-6xl px-4 py-8">
           {/* Header */}
